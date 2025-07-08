@@ -14,19 +14,19 @@ namespace MyModel_CodeFirst.Models
         //(1)撰寫靜態方法 Initialize(IServiceProvider serviceProvider)
         public static void Initialize(IServiceProvider serviceProvider)
         {
-                       
+
+
+           
             //(4)加上 using () 及 判斷資料庫是否有資料的程式
             using (GuestBookContext context = new GuestBookContext(serviceProvider.GetRequiredService<DbContextOptions<GuestBookContext>>()))
             {
 
                 //(4)加上 using () 及 判斷資料庫是否有資料的程式
-                // 如果沒有任何一筆資料的話
                 if (!context.Book.Any())
                 {
                     //(2)撰寫Book及ReBook資料表內的初始資料程式
                     string[] guid = { Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString() };
 
-                    // 加入多筆資料
                     context.Book.AddRange(
                         new Book
                         {
