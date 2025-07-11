@@ -35,6 +35,7 @@ namespace MyModel_CodeFirst.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ReBookID,Description,Author,CreatedDate,BookID")] ReBook reBook)
         {
+          
             if (ModelState.IsValid)
             {
                 _context.Add(reBook);
@@ -49,7 +50,7 @@ namespace MyModel_CodeFirst.Controllers
             return Json(reBook);
         }
 
-
+        //2.5.16 在ReBooksController中撰寫自VCRebook ViewComponent取得回覆留言資料的Action
         public IActionResult GetReBookByViewComponent(string BookID)
         {
 

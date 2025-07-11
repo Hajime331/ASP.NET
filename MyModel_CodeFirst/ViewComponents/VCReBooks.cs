@@ -16,7 +16,6 @@ namespace MyModel_CodeFirst.ViewComponents
 
 
         //2.3.4 撰寫InvokeAsync()方法取得回覆留言資料
-        // ViewComponent 的標準入口方法，名稱必須是 Invoke 或 InvokeAsync
         public async Task<IViewComponentResult> InvokeAsync(string bookID)
         {
             //select*

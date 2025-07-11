@@ -12,7 +12,7 @@ using MyModel_CodeFirst.Models;
 namespace MyModel_CodeFirst.Migrations
 {
     [DbContext(typeof(GuestBookContext))]
-    [Migration("20250703014654_InitialCreate")]
+    [Migration("20250703014514_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
