@@ -277,7 +277,7 @@ namespace MyModel_CodeFirst.Controllers
 
 
 
-//5   登入功能製作
+//5   登入登出功能製作
 
 //5.1   資料庫變更
 //5.1.1 用Code-First方式在資料庫裡新增一個Login資料表存放管理者帳號密碼
