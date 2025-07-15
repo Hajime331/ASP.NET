@@ -12,8 +12,8 @@ using MyModel_CodeFirst.Models;
 namespace MyModel_CodeFirst.Migrations
 {
     [DbContext(typeof(GuestBookContext))]
-    [Migration("20250703014514_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250715035428_AddLoginTable")]
+    partial class AddLoginTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,6 +57,22 @@ namespace MyModel_CodeFirst.Migrations
                         .HasName("PK_BookID");
 
                     b.ToTable("Book");
+                });
+
+            modelBuilder.Entity("MyModel_CodeFirst.Models.Login", b =>
+                {
+                    b.Property<string>("Account")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Account");
+
+                    b.ToTable("Login");
                 });
 
             modelBuilder.Entity("MyModel_CodeFirst.Models.ReBook", b =>
