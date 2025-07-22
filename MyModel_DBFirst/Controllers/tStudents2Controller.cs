@@ -9,27 +9,28 @@ using MyModel_DBFirst.Models;
 
 namespace MyModel_DBFirst.Controllers
 {
-    public class tStudentsController : Controller
+    public class tStudents2Controller : Controller
     {
-        //2.2.2 將原先既有的程式碼(如下)註解掉
+        //6.2.2 將步驟tStudents2Controller所註解掉的程式取消註解(這裡的寫法是scaffold預設的依賴注入寫法)
         private readonly dbStudentsContext _context;
 
-        public tStudentsController(dbStudentsContext context)
+        public tStudents2Controller(dbStudentsContext context)
         {
             _context = context;
         }
 
 
-        //2.2.1 撰寫建立DbContext物件的程式
-        //dbStudentsContext _context = new dbStudentsContext(); //直接建立dbStudentsContext物件
+        //6.2.1 將tStudents2Controller建立DbContext物件的程式註解
+        //dbStudentsContext _context = new dbStudentsContext(); 
 
-        // GET: tStudents
+        // GET: tStudents2
         public async Task<IActionResult> Index()
         {
-            return View(await _context.tStudent.ToListAsync());
+            var dbStudentsContext = _context.tStudent.Include(t => t.Department);
+            return View(await dbStudentsContext.ToListAsync());
         }
 
-        // GET: tStudents/Details/5
+        // GET: tStudents2/Details/5
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -38,6 +39,7 @@ namespace MyModel_DBFirst.Controllers
             }
 
             var tStudent = await _context.tStudent
+                .Include(t => t.Department)
                 .FirstOrDefaultAsync(m => m.fStuId == id);
             if (tStudent == null)
             {
@@ -47,48 +49,31 @@ namespace MyModel_DBFirst.Controllers
             return View(tStudent);
         }
 
-        // GET: tStudents/Create
+        // GET: tStudents2/Create
         public IActionResult Create()
         {
+            ViewData["DeptID"] = new SelectList(_context.Department, "DeptID", "DeptID");
             return View();
         }
 
-        // POST: tStudents/Create
+        // POST: tStudents2/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("fStuId,fName,fEmail,fScore")] tStudent tStudent)
+        public async Task<IActionResult> Create([Bind("fStuId,fName,fEmail,fScore,DeptID")] tStudent tStudent)
         {
-
-
-            //3.4 在tStudentsController檔案的Post Create Action中撰寫檢查學號是否重複的程式碼
-            //select * from tStudent
-            //where fStuId = '127377'
-
-            //Linq 
-            var result = await _context.tStudent.FindAsync(tStudent.fStuId);  //將表單資料的學號傳入資料庫查詢
-
-            if (result!=null)  //表示已經有此學號存在資料庫
+            if (ModelState.IsValid)
             {
-                ViewData["ErrorMessage"] = "學號已存在，請重新輸入！";  //將錯誤訊息傳遞到View
-                return View(tStudent);
+                _context.Add(tStudent);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            ////////////////////////////////////////////////////////////////////////////////////////
-          
-
-            if (ModelState.IsValid)  //模型驗證是否完全符合規則
-            {
-                _context.Add(tStudent);   //將資料加入到資料庫的tStudent表中
-                await _context.SaveChangesAsync();  //正式地寫入資料庫
-
-                return RedirectToAction(nameof(Index));  //回到Index頁面
-            }
-
+            ViewData["DeptID"] = new SelectList(_context.Department, "DeptID", "DeptID", tStudent.DeptID);
             return View(tStudent);
         }
 
-        // GET: tStudents/Edit/5
+        // GET: tStudents2/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -101,15 +86,16 @@ namespace MyModel_DBFirst.Controllers
             {
                 return NotFound();
             }
+            ViewData["DeptID"] = new SelectList(_context.Department, "DeptID", "DeptID", tStudent.DeptID);
             return View(tStudent);
         }
 
-        // POST: tStudents/Edit/5
+        // POST: tStudents2/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("fStuId,fName,fEmail,fScore")] tStudent tStudent)
+        public async Task<IActionResult> Edit(string id, [Bind("fStuId,fName,fEmail,fScore,DeptID")] tStudent tStudent)
         {
             if (id != tStudent.fStuId)
             {
@@ -136,10 +122,11 @@ namespace MyModel_DBFirst.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["DeptID"] = new SelectList(_context.Department, "DeptID", "DeptID", tStudent.DeptID);
             return View(tStudent);
         }
 
-        // GET: tStudents/Delete/5
+        // GET: tStudents2/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -148,6 +135,7 @@ namespace MyModel_DBFirst.Controllers
             }
 
             var tStudent = await _context.tStudent
+                .Include(t => t.Department)
                 .FirstOrDefaultAsync(m => m.fStuId == id);
             if (tStudent == null)
             {
@@ -157,7 +145,7 @@ namespace MyModel_DBFirst.Controllers
             return View(tStudent);
         }
 
-        // POST: tStudents/Delete/5
+        // POST: tStudents2/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)

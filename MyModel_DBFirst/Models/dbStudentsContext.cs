@@ -6,31 +6,39 @@ namespace MyModel_DBFirst.Models;
 
 public partial class dbStudentsContext : DbContext
 {
-    
+    //6.1.3 將dbStudentsContext中所寫的空建構子註解掉(也可留著只是用不到)
     //1.2.5 在dbStudentsContext.cs裡撰寫一個空的建構子
-    public dbStudentsContext()
+    //public dbStudentsContext()
+    //{
+    //}
+
+    public dbStudentsContext(DbContextOptions<dbStudentsContext> options)
+        : base(options)
     {
     }
 
 
-    //public dbStudentsContext(DbContextOptions<dbStudentsContext> options)
-    //    : base(options)
-    //{
-    //}
-
-
+    //6.1.2 將dbStudentsContext中所寫的連線字串註解掉
     //1.2.4 在dbStudentsContext.cs裡撰寫連線到資料庫的程式
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    => optionsBuilder.UseSqlServer("Data Source=C501A103;Database=dbStudents;TrustServerCertificate=True;User ID=abc;Password=123");
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //        => optionsBuilder.UseSqlServer("Data Source=TEACHER;Database=dbStudents;TrustServerCertificate=True;User ID=abc;Password=123");
+
+
+
+
 
 
     public virtual DbSet<tStudent> tStudent { get; set; }
+    //5.2.4 在dbStudentsContext中加入Department的DbSet
+    public virtual DbSet<Department> Department { get; set; }
+
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<tStudent>(entity =>
         {
-            entity.HasKey(e => e.fStuId).HasName("PK__tStudent__08E5BA95303A6458");
+            entity.HasKey(e => e.fStuId).HasName("PK__tStudent__08E5BA9512D28852");
 
             entity.Property(e => e.fStuId)
                 .HasMaxLength(6)

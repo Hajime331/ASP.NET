@@ -1,28 +1,34 @@
 ﻿@model MyModel_DBFirst.Models.tStudent
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "修改學生資料";
 }
 
-<h1>Create</h1>
+<h1>@ViewData["Title"]</h1>
 
-<h4>tStudent</h4>
+<h4>@ViewData["Now"]</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="fStuId" />
             <div class="form-group">
                 <label asp-for="fStuId" class="control-label"></label>
-                <input asp-for="fStuId" class="form-control" />
-                <span asp-validation-for="fStuId" class="text-danger"></span>
-                @* //3.5 在Create View檔案中補上呈現學號重複的錯誤訊息 *@
-                <span class="text-danger">@ViewData["ErrorMessage"]</span>
+                <input asp-for="fStuId" class="form-control" readonly />
+           @*      <div>@Model.fStuId</div> *@
+              
             </div>
             <div class="form-group">
                 <label asp-for="fName" class="control-label"></label>
                 <input asp-for="fName" class="form-control" />
                 <span asp-validation-for="fName" class="text-danger"></span>
+            </div>
+            @*//5.5.6 修改 Edit View *@
+            <div class="form-group">
+                <label asp-for="DeptID" class="control-label"></label>
+                <select asp-for="DeptID" asp-items="@ViewBag.Dept" class="form-control"></select>
+                <span asp-validation-for="DeptID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="fEmail" class="control-label"></label>
@@ -34,15 +40,16 @@
                 <input asp-for="fScore" class="form-control" />
                 <span asp-validation-for="fScore" class="text-danger"></span>
             </div>
+           
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="更新" class="btn btn-warning" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="IndexViewModel" asp-route-id="@ViewBag.DeptID">回學生資料列表</a>
 </div>
 
 @section Scripts {
