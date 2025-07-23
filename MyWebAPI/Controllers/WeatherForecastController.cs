@@ -165,3 +165,61 @@ namespace MyWebAPI.Controllers
 //4.3.2 使用Include()同時取得關聯資料並使用ProductDTO來傳遞資料
 //4.3.3 使用Swagger測試
 //※發生循環參照時可使用JsonIgnore來解決※
+
+
+//4.4   建立Product資料查詢功能
+//4.4.1 將資料轉換的程式寫成函數並再次改寫Get Action(※這種寫法架構才會好※)
+//4.4.2 加入產品類別搜尋
+//4.4.3 加入產品名稱關鍵字搜尋
+//4.4.4 加入價格區間搜區
+//4.4.5 加入產品敘述關鍵字搜尋
+//4.4.6 使用Swagger測試(輸入的條件越多越嚴苛)
+//4.4.7 利用Request URL在瀏覽器上執行測試
+//※這個部份在做時會因Linq的寫法不同造成資料處理完的型態有不同的結果※
+//※需依照Linq撰寫的方式及資料的同步或非同步取得，依其所需改變寫法※
+//4.4.8 修改先將資料載入內存的寫法
+
+
+//4.5   同時取得Category及Product一對多的關聯資料
+//4.5.1 先使用Swagger測試及觀查目前Category的資料取得狀況
+//4.5.2 建立CategoryDTO類別
+//4.5.3 改寫CategoriesController裡的第一個Get Action
+//4.5.4 使用Include()同時取得關聯資料並以CategoryDTO傳遞
+//4.5.5 使用Swagger測試
+//4.5.6 改寫CategoriesController裡的第二個Get Action
+//4.5.7 使用Include()同時取得關聯資料並以CategoryDTO傳遞
+//4.5.8 使用Swagger測試
+//4.5.9 在CategoryDTO裡加入統計該類別有幾種商品的屬性
+//4.5.10 在ProductDTO裡也加入一些統計資料的屬性
+//4.5.11 使用Swagger測試
+
+
+//4.6   使用SQL語法進行查詢
+//4.6.1 新增一個Get Action GetProductFromSQL()並設定介接口為[HttpGet("fromSQL")]
+//4.6.2 用SQL語法撰寫與先前一樣的功能並使用DTO傳遞結果
+//4.6.3 製作關鍵字查詢
+//4.6.4 使用Swagger測試(這裡會發生錯誤，因為使用了合併查詢)
+//4.6.5 修改GoodStoreContext，增加ProductDTO的DbSet屬性
+//4.6.6 將_context.Product.FromSqlRaw(sql).ToListAsync();改為_context.ProductDTO.FromSqlRaw(sql).ToListAsync();
+//4.6.7 使用Swagger測試(這裡會發生ProductDTO沒有設定Primary Key的例外)
+//4.6.8 修改GoodStoreContext的OnModelCreating()，標示ProductDTO為HasNoKey
+//4.6.9 使用Swagger測試
+//※使用SQL語法進行查詢是SQL老手的習慣，雖然EF Core已經使用一段時間，但很多開發人員仍鍾情於SQL※
+//※不過使用SQL時需注意SQL Injection的問題，而我們使用SqlParameter來避免SQL Injection※
+//※使用參數化查詢是防止 SQL Injection 的有效方式，使用SqlParameter避免SQ字串接寫法，直接避免SQL Injection風險※
+
+
+
+//4.7   關於DbContext修改的優化做法
+//4.7.1 複製GoodStoreContext.cs並更名為GoodStoreContextG2.cs
+//4.7.2 修改類別、建構子名稱及繼承父類別
+//4.7.3 只留下DTO的DbSet其他的DbSet全數刪除
+//4.7.4 OnModelCreating方法中只留下ProductDTO的Entity設定其他刪除
+//4.7.5 加入base.OnModelCreating(modelBuilder);來繼承父類別所的方法
+//4.7.6 將GoodStoreContext.cs中與ProductDTO有關的設置刪除
+//4.7.7 在Program裡註冊GoodStoreContext2的Service(※注意※原本註冊的GoodStoreContext不可刪掉)
+//4.7.8 修改ProductsController上方所注入的GoodStoreContext為GoodStoreContext2
+//4.7.9 使用Swagger測試
+//※如果我們只是直接去改了原本的Context，在開發的過程中如果發生必須重新執行DB First的動作時，Context內容將被重置※
+//※因此請善加利用物件導向的繼承寫法保持程式碼的彈性及再用性※
+//4.7.10 最後一併用Metadata來設定目前Product.cs 類別中的 [JsonIgnore]

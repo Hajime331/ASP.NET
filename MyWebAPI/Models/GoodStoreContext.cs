@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using MyWebAPI.DTOs;
 
 namespace MyWebAPI.Models;
 
@@ -21,11 +22,22 @@ public partial class GoodStoreContext : DbContext
 
     public virtual DbSet<Product> Product { get; set; }
 
+    //4.7.6 將GoodStoreContext.cs中與ProductDTO有關的設置刪除
+    //4.6.5 修改GoodStoreContext，增加ProductDTO的DbSet屬性
+    //public virtual DbSet<ProductDTO> ProductDTO { get; set; }
+
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        //4.7.6 將GoodStoreContext.cs中與ProductDTO有關的設置刪除
+        //4.6.8 修改GoodStoreContext的OnModelCreating()，標示ProductDTO為HasNoKey
+        //modelBuilder.Entity<ProductDTO>(entity=>entity.HasNoKey());
+
+
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.CateID).HasName("PK__Category__27638D74D259D98A");
+            entity.HasKey(e => e.CateID).HasName("PK__Category__27638D744910E426");
 
             entity.Property(e => e.CateID)
                 .HasMaxLength(2)
@@ -35,9 +47,9 @@ public partial class GoodStoreContext : DbContext
 
         modelBuilder.Entity<Member>(entity =>
         {
-            entity.HasKey(e => e.MemberID).HasName("PK__Member__0CF04B3881685907");
+            entity.HasKey(e => e.MemberID).HasName("PK__Member__0CF04B384472D74B");
 
-            entity.HasIndex(e => e.Account, "UQ__Member__B0C3AC46ACCE842A").IsUnique();
+            entity.HasIndex(e => e.Account, "UQ__Member__B0C3AC467FD4AD29").IsUnique();
 
             entity.Property(e => e.MemberID)
                 .HasMaxLength(6)
@@ -52,7 +64,7 @@ public partial class GoodStoreContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.OrderID).HasName("PK__Order__C3905BAFBFA92D51");
+            entity.HasKey(e => e.OrderID).HasName("PK__Order__C3905BAFEE8330D4");
 
             entity.Property(e => e.OrderID)
                 .HasMaxLength(12)
@@ -70,11 +82,12 @@ public partial class GoodStoreContext : DbContext
                 .HasForeignKey(d => d.MemberID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Order__MemberID__412EB0B6");
+
         });
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
-            entity.HasKey(e => new { e.OrderID, e.ProductID }).HasName("PK__OrderDet__08D097C1D523D397");
+            entity.HasKey(e => new { e.OrderID, e.ProductID }).HasName("PK__OrderDet__08D097C184DFF2DA");
 
             entity.Property(e => e.OrderID)
                 .HasMaxLength(12)
@@ -98,7 +111,7 @@ public partial class GoodStoreContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.ProductID).HasName("PK__Product__B40CC6EDB42269CC");
+            entity.HasKey(e => e.ProductID).HasName("PK__Product__B40CC6ED3E69340A");
 
             entity.Property(e => e.ProductID)
                 .HasMaxLength(5)
@@ -106,9 +119,7 @@ public partial class GoodStoreContext : DbContext
             entity.Property(e => e.CateID)
                 .HasMaxLength(2)
                 .IsFixedLength();
-            entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+        
             entity.Property(e => e.Description).HasMaxLength(200);
             entity.Property(e => e.Picture).HasMaxLength(12);
             entity.Property(e => e.Price).HasColumnType("money");

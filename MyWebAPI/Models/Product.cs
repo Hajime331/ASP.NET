@@ -16,17 +16,12 @@ public partial class Product
 
     public string Picture { get; set; } = null!;
 
-    public DateTime CreatedDate { get; set; }
 
     public string CateID { get; set; } = null!;
 
-    // [JsonIgnore] serialization時忽略OrderDetail屬性(關聯)
-    // 避免循環參照
-    [JsonIgnore]
+
     public virtual Category Cate { get; set; } = null!;
 
-    // [JsonIgnore] serialization時忽略OrderDetail屬性
-    [JsonIgnore]
 
     public virtual ICollection<OrderDetail> OrderDetail { get; set; } = new List<OrderDetail>();
 }

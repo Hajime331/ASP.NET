@@ -6,11 +6,22 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<GoodStoreContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("GoodStoreConnection")));
+
+//4.7.7 在Program裡註冊GoodStoreContext2的Service(※注意※原本註冊的GoodStoreContext不可刪掉)
+builder.Services.AddDbContext<GoodStoreContextG2>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("GoodStoreConnection")));
 
 
