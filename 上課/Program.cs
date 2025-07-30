@@ -14,7 +14,10 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddControllers();
+
+
+//4.7.10 在Program裡全域啟用 ReferenceHandler.Preserve
+//builder.Services.AddControllers();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -44,11 +47,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("MyCorsPolicy");
+
 
 //2.1.3 在Program.cs中加入app.UseStaticFiles(); (因為我們開的是 純WebAPI專案)
 app.UseStaticFiles();
-
-app.UseCors("MyCorsPolicy");
 
 app.UseAuthorization();
 
