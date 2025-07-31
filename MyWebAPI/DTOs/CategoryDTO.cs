@@ -17,7 +17,7 @@ namespace MyWebAPI.DTOs
                 return Product.Count;
             } 
         }
-        [JsonIgnore]
+
         public virtual ICollection<Product> Product { get; set; } = new List<Product>();
 
        

@@ -242,3 +242,40 @@ namespace MyWebAPI.Controllers
 //4.8.3 設置介接口為[HttpGet("fromProc/{id}")]，Action名稱可自訂，並使用ProductDTO來傳遞資料
 //4.8.4 使用預存程序進行查詢(參數的傳遞請使用SqlParameter)
 //4.8.5 使用Swagger測試
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//5     使用Post新增資料
+
+//※較常用到的三種資料來源方式[FromBody][FromForm][FromQuery]※
+//※若資料來源都是單純字串或數值等，預設為[FromBody]※
+
+//5.1   基本新增資料方式
+//5.1.1 先使用Swagger測試及觀查目前Product及Category的Post(注意其接收格式為JSON)
+//5.1.2 使用Swagger對此二個資料表做資料新增測試(此時可能會有required的錯誤)
+//5.1.3 修改Category.cs的Product屬性為非必填
+//5.1.4 修改Product.cs的Category屬性為非必填
+//5.1.5 使用Swagger再進行新增測試(應可成功新增寫入資料庫，但並無檔案之上傳)
+//※由於傳遞的是JSON格式資料，只要能對應到所有屬性，通過模型的驗證即可成功※//
+//※若是以JSON傳遞資料方式，則前端表單在傳遞時需先轉為JSON格式再拋給API※//
+//※不過因Product的前端表單中有上傳檔案的功能，因此後面必須再做修改※//
+
+
+
+//5.2   新增Product資料加入上傳照片功能
+//5.2.1 將ProductsController的Post Action標示為[FromForm]，使其能直接由前端表單接收資料
+//5.2.2 使用Swagger測試是否能正常新增(目前應會有錯誤,無法正常新增)
+//5.2.3 建立一個ProductPostDTO給Post利用DTO傳遞資料
+//5.2.4 建立一個新的Post Action，介接口設定為[HttpPost("PostWithPhoto")]，並加入上傳檔案的動作
+//(這裡我們不要把原來的Post刪掉，而是新做一個以利測試)
+//5.2.5 將上傳檔案寫成一個獨立的方法
+//5.2.6 使用Swagger測試
+//※如果Bind的資料模型類別中具有上傳檔案的物件(如IFormFile)，即使不標示資料來源為[FromForm]，它仍能自己判斷匹配為[FromForm]※//
+
+
+
+
+
+
+
