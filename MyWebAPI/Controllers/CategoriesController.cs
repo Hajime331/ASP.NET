@@ -47,17 +47,30 @@ namespace MyWebAPI.Controllers
             return category;
         }
 
-        // PUT: api/Categories/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        //6.1.4 改寫CategoriesController中Put Action內容
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(string id, Category category)
+        public async Task<IActionResult> PutCategory(string id,[FromForm] CategoryPutDTO category)
         {
-            if (id != category.CateID)
+            //if (id != category.CateID)
+            //{
+            //    return BadRequest();
+            //}
+
+            if (id ==null)
             {
                 return BadRequest();
             }
+            
+            var cate = await _context.Category.FindAsync(id);
 
-            _context.Entry(category).State = EntityState.Modified;
+            if (cate == null)
+            {
+                return NotFound("查無資料");
+            }
+
+            cate.CateName = category.CateName;
+
+            _context.Entry(cate).State = EntityState.Modified;
 
             try
             {
@@ -75,15 +88,23 @@ namespace MyWebAPI.Controllers
                 }
             }
 
-            return NoContent();
+            //return NoContent();
+
+            return Ok(cate);
         }
 
-        // POST: api/Categories
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        //5.3.10 修改CategoriesController的Post方法，使其傳遞CategoryPostDTO
         [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory(Category category)
+        public async Task<ActionResult<CategoryPostDTO>> PostCategory(CategoryPostDTO category)
         {
-            _context.Category.Add(category);
+            //5.3.11 修改Post Action 內的寫法
+            Category cate = new Category()
+            {
+                CateID = category.CateID,
+                CateName = category.CateName
+            };
+
+            _context.Category.Add(cate);
             try
             {
                 await _context.SaveChangesAsync();

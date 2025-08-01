@@ -274,6 +274,57 @@ namespace MyWebAPI.Controllers
 //※如果Bind的資料模型類別中具有上傳檔案的物件(如IFormFile)，即使不標示資料來源為[FromForm]，它仍能自己判斷匹配為[FromForm]※//
 
 
+//5.3   資料驗證
+//5.3.1 在ProductPostDTO.cs加入需要的內建驗證器(Validator)
+//5.3.2 使用Swagger測試
+//※在一般的情況下我們只會在接收資料(Post、Put、Delete)時進行驗證，讀取資料則不會※
+//5.3.3 在ProductPostDTO.cs加入自訂驗證器(使用ValidationAttribute物件)
+//5.3.4 在需要使用此驗證器的屬性上加入標籤(這裡範例為ProductName屬性)
+//5.3.5 使用Swagger測試
+//5.3.6 建立CategoryPostDTO類別
+//5.3.7 在CategoryPostDTO.cs加入需要的內建驗證器(Validator)
+//5.3.8 在CategoryPostDTO.cs加入自訂驗證器(使用ValidationAttribute物件)
+//5.3.9 在需要使用此驗證器的屬性上加入標籤
+//5.3.10 修改CategoriesController的Post方法，使其傳遞CategoryPostDTO
+//5.3.11 修改Post Action 內的寫法
+//5.3.12 使用Swagger測試
+
+
+//小結
+//※程式撰寫至此，我們可以發現DTO在WebAPI的建置中是相當重要的資料傳輸物件※
+//※除非你的API非常單純，否則您無法避免使用DTO物件※
+//※因此在API設計的時候，我們盡量不去動到原來的Model物件，資料的傳輸皆用DTO來取代※
+//※若DbContext物件的設計需求，我們則使用繼承的方式來使程式碼保持彈性※
+
+
+/////////////////////////////////////////////////////////////////////////////
+
+//6     使用Put修改資料
+
+//6.1   基本修改資料方式
+//6.1.1 先使用Swagger測試及觀查目前Product及Category的Put(注意其接收格式為JSON)
+//6.1.2 使用Swagger對此二個資料表做資料修改測試(這邊主要是觀察一下它們的資料呈現)
+//6.1.3 新增CategoryPutDTO類別
+//6.1.4 改寫CategoriesController中Put Action內容
+//6.1.5 使用Swagger測試
+//6.1.6 新增ProductPutDTO類別
+//6.1.7 改寫ProductsController中Put Action內容
+//6.1.8 使用Swagger測試
+
+
+/////////////////////////////////////////////////////////////////////////////
+//7     使用Delete刪除資料
+
+//7.1   基本刪除資料方式
+//7.1.1 改寫ProductsController中Delete Action內容，加入刪除照片的功能
+//7.1.2 將刪除照片功能另建立FileDelete()方法
+//7.1.3 使用Swagger測試
+//7.1.4 使用Swagger測試刪除Category資料(這裡會發生資料表關聯的完整性限制)
+//7.1.5 建立可刪除多筆資料的Delete Action，介接口設為[HttpDelete("ByCatID")]，方法名稱可自訂，傳入的參為為商品類別ID
+//7.1.6 使用Swagger測試
+//7.1.7 再次使用Swagger測試刪除Category資料
+//※一般要刪除父資料表的資料前，需先刪除與之關聯的子資料表所有資料，以確保資料不會被批次誤刪※
+
 
 
 
