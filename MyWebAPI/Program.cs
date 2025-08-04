@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MyWebAPI.Models;
+using MyWebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,10 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddControllers();
+
+
+//4.7.10 在Program裡全域啟用 ReferenceHandler.Preserve
+//builder.Services.AddControllers();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -34,6 +38,10 @@ builder.Services.AddDbContext<GoodStoreContextG2>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("GoodStoreConnection")));
 
 
+//8.1.6 在Program.cs裡註冊SomeService服務
+builder.Services.AddScoped<SomeService>();
+
+
 
 var app = builder.Build();
 
@@ -44,11 +52,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("MyCorsPolicy");
+
 
 //2.1.3 在Program.cs中加入app.UseStaticFiles(); (因為我們開的是 純WebAPI專案)
 app.UseStaticFiles();
-
-app.UseCors("MyCorsPolicy");
 
 app.UseAuthorization();
 
