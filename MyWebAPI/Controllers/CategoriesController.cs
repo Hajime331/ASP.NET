@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyWebAPI.DTOs;
 using MyWebAPI.Models;
+using MyWebAPI.Services;
 
 namespace MyWebAPI.Controllers
 {
@@ -16,27 +17,36 @@ namespace MyWebAPI.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly GoodStoreContext _context;
+        //8.2.4 在CategoriesController裡注入CategoryService服務
+        private readonly CategoryService _categoryService;
 
-        public CategoriesController(GoodStoreContext context)
+        public CategoriesController(GoodStoreContext context, CategoryService categoryService)
         {
             _context = context;
+            _categoryService = categoryService;
         }
 
-        //4.5.3 改寫CategoriesController裡的第一個Get Action
+        //8.2.5 改寫CategoriesController裡的兩個Get Action寫法，僅留下控制邏輯
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategory()
         {
-            //4.5.4 使用Include()同時取得關聯資料並以CategoryDTO傳遞
-            return await _context.Category.Include(c=>c.Product).Select(c=>ItemCategory(c)).ToListAsync();
+            var categories = await _categoryService.GetCategory();
+
+            //控制邏輯：如果沒有找到任何資料，則回傳NotFound
+            if (categories == null || !categories.Any())
+            {
+                return NotFound("沒有找到任何資料");
+            }
+
+            return categories;
         }
 
-        //4.5.6 改寫CategoriesController裡的第二個Get Action
+        //8.2.5 改寫CategoriesController裡的兩個Get Action寫法，僅留下控制邏輯
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryDTO>> GetCategory(string id)
         {
-            //4.5.7 使用Include()同時取得關聯資料並以CategoryDTO傳遞
-            var category = await _context.Category.Include(c => c.Product).Where(c=>c.CateID==id)
-                .Select(c => ItemCategory(c)).FirstOrDefaultAsync();
+           
+            var category = await _categoryService.GetCategory(id);
 
 
             if (category == null)
@@ -47,98 +57,69 @@ namespace MyWebAPI.Controllers
             return category;
         }
 
-        //6.1.4 改寫CategoriesController中Put Action內容
+
+
+        //8.2.7 將Post、Put及Delete重構
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCategory(string id,[FromForm] CategoryPutDTO category)
         {
-            //if (id != category.CateID)
-            //{
-            //    return BadRequest();
-            //}
-
+           
             if (id ==null)
             {
                 return BadRequest();
             }
-            
-            var cate = await _context.Category.FindAsync(id);
 
-            if (cate == null)
+            var cateOld = await _categoryService.getCategory(id);
+
+            if (cateOld == null)
             {
                 return NotFound("查無資料");
             }
 
-            cate.CateName = category.CateName;
-
-            _context.Entry(cate).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CategoryExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            //return NoContent();
+           var cate = await _categoryService.UpdateCategory(cateOld, category);
 
             return Ok(cate);
         }
 
-        //5.3.10 修改CategoriesController的Post方法，使其傳遞CategoryPostDTO
+
         [HttpPost]
         public async Task<ActionResult<CategoryPostDTO>> PostCategory(CategoryPostDTO category)
         {
-            //5.3.11 修改Post Action 內的寫法
-            Category cate = new Category()
-            {
-                CateID = category.CateID,
-                CateName = category.CateName
-            };
 
-            _context.Category.Add(cate);
-            try
+            if (CategoryExists(category.CateID))
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (CategoryExists(category.CateID))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest();
             }
 
-            return CreatedAtAction("GetCategory", new { id = category.CateID }, category);
+            var cate =await _categoryService.InsertCategory(category);
+
+            return Ok(cate);
         }
 
         // DELETE: api/Categories/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(string id)
         {
-            var category = await _context.Category.FindAsync(id);
+            var category = await _categoryService.getCategory(id);
+
             if (category == null)
             {
                 return NotFound();
             }
 
-            _context.Category.Remove(category);
-            await _context.SaveChangesAsync();
+            var result = await _categoryService.DeleteCategory(category);
+
+            if (!result)
+            {
+                return BadRequest();
+            }
+
 
             return NoContent();
         }
+
+        
+
 
         private bool CategoryExists(string id)
         {
@@ -146,18 +127,6 @@ namespace MyWebAPI.Controllers
         }
 
 
-        private static CategoryDTO ItemCategory(Category c)
-        {
-            var result = new CategoryDTO()
-            {
-                CateID = c.CateID,
-                CateName = c.CateName,
-                //ProductCount = c.Product.Count(),
-                Product = c.Product
-            };
-
-            return result;
-
-        }
+      
     }
 }
