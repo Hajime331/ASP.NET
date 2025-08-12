@@ -10,11 +10,11 @@ namespace MyWebAPI.Controllers
     [ApiController]
     public class PetAdoptionController : ControllerBase
     {
-        //9.1.6 撰寫Get()方法，使用HttpClient物件取得第三方API的資料
+        //9.1.5 撰寫Get()方法，使用HttpClient物件取得第三方API的資料
         [HttpGet]
         public async Task<IEnumerable<PetAdoptionData>> Get()
         {
-            string url = "https://data.moa.gov.tw/Service/OpenData/TransService.aspx?UnitId=QcbUEzN6E6DL"; //這是資料來源
+            string url = "https://data.moa.gov.tw/Service/OpenData/TransService.aspx?UnitId=QcbUEzN6E6DL&$top=200"; //這是資料來源
 
 
             HttpClient client = new HttpClient();
